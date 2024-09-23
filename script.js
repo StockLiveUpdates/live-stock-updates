@@ -1,28 +1,22 @@
-const fetchStockData = async (symbol) => {
-    const apiKey = 'TKCQJVCWL1473J3E'; // Your Alpha Vantage API key
-    const response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${apiKey}`);
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+'use strict';
+var request = require('request');
+
+// Replace "demo" with your actual API key
+var apiKey = 'TKCQJVCWL1473J3E'; // Your Alpha Vantage API key
+var symbol = 'RELIANCE.NS'; // Use 'RELIANCE.BSE' for BSE
+var url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${apiKey}`;
+
+request.get({
+    url: url,
+    json: true,
+    headers: {'User-Agent': 'request'}
+}, (err, res, data) => {
+    if (err) {
+        console.log('Error:', err);
+    } else if (res.statusCode !== 200) {
+        console.log('Status:', res.statusCode);
+    } else {
+        // Data is successfully parsed as a JSON object
+        console.log('Stock Data:', data);
     }
-    const data = await response.json();
-    return data;
-};
-
-const displayStockData = async () => {
-    const bseSymbol = 'RELIANCE.BSE'; // Use actual BSE symbol
-    const nseSymbol = 'RELIANCE.NS'; // Use actual NSE symbol
-
-    try {
-        const bseData = await fetchStockData(bseSymbol);
-        const nseData = await fetchStockData(nseSymbol);
-
-        document.getElementById('stock-data-bse').innerText = JSON.stringify(bseData, null, 2); // Display BSE data
-        document.getElementById('stock-data-nse').innerText = JSON.stringify(nseData, null, 2); // Display NSE data
-    } catch (error) {
-        console.error('Error fetching stock data:', error);
-        document.getElementById('stock-data-bse').innerText = 'Error loading BSE data.';
-        document.getElementById('stock-data-nse').innerText = 'Error loading NSE data.';
-    }
-};
-
-displayStockData();
+});
