@@ -1,56 +1,19 @@
-// Use your Alpha Vantage API key
-const apiKey = 'TKCQJVCWL1473J3E'; 
+const fetchStockData = async (symbol) => {
+    const apiKey = 'TKCQJVCWL1473J3E'; // Your Alpha Vantage API key
+    const response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${apiKey}`);
+    const data = await response.json();
+    return data;
+};
 
-// Symbols for BSE and NSE
-const symbolBSE = 'RELIANCE.BSE';  // Reliance on BSE
-const symbolNSE = 'RELIANCE.NS';   // Reliance on NSE
+const displayStockData = async () => {
+    const bseSymbol = 'RELIANCE.BSE'; // Use actual BSE symbol
+    const nseSymbol = 'RELIANCE.NSE'; // Use actual NSE symbol
 
-// Fetch stock data for BSE
-fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbolBSE}&interval=1min&apikey=${apiKey}`)
-    .then(response => response.json())
-    .then(data => {
-        const timeSeries = data['Time Series (1min)'];
-        const latestTime = Object.keys(timeSeries)[0];
-        const stockPriceBSE = timeSeries[latestTime]['1. open'];
-        document.getElementById('stock-price-bse').innerText = `Current Price: ₹${stockPriceBSE}`;
-    })
-    .catch(error => console.error('Error fetching BSE stock data:', error));
+    const bseData = await fetchStockData(bseSymbol);
+    const nseData = await fetchStockData(nseSymbol);
 
-// Fetch stock data for NSE
-fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbolNSE}&interval=1min&apikey=${apiKey}`)
-    .then(response => response.json())
-    .then(data => {
-        const timeSeries = data['Time Series (1min)'];
-        const latestTime = Object.keys(timeSeries)[0];
-        const stockPriceNSE = timeSeries[latestTime]['1. open'];
-        document.getElementById('stock-price-nse').innerText = `Current Price: ₹${stockPriceNSE}`;
-    })
-    .catch(error => console.error('Error fetching NSE stock data:', error));
-// Use your Alpha Vantage API key
-const apiKey = 'TKCQJVCWL1473J3E'; 
+    document.getElementById('stock-data-bse').innerText = JSON.stringify(bseData, null, 2); // Display BSE data
+    document.getElementById('stock-data-nse').innerText = JSON.stringify(nseData, null, 2); // Display NSE data
+};
 
-// Symbols for BSE and NSE
-const symbolBSE = 'RELIANCE.BSE';  // Reliance on BSE
-const symbolNSE = 'RELIANCE.NS';   // Reliance on NSE
-
-// Fetch stock data for BSE
-fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbolBSE}&interval=1min&apikey=${apiKey}`)
-    .then(response => response.json())
-    .then(data => {
-        const timeSeries = data['Time Series (1min)'];
-        const latestTime = Object.keys(timeSeries)[0];
-        const stockPriceBSE = timeSeries[latestTime]['1. open'];
-        document.getElementById('stock-price-bse').innerText = `Current Price: ₹${stockPriceBSE}`;
-    })
-    .catch(error => console.error('Error fetching BSE stock data:', error));
-
-// Fetch stock data for NSE
-fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbolNSE}&interval=1min&apikey=${apiKey}`)
-    .then(response => response.json())
-    .then(data => {
-        const timeSeries = data['Time Series (1min)'];
-        const latestTime = Object.keys(timeSeries)[0];
-        const stockPriceNSE = timeSeries[latestTime]['1. open'];
-        document.getElementById('stock-price-nse').innerText = `Current Price: ₹${stockPriceNSE}`;
-    })
-    .catch(error => console.error('Error fetching NSE stock data:', error));
+displayStockData();
